@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "django_rest_passwordreset",
     "accounts",
 ]
 
@@ -101,3 +102,8 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # EMAIL_PORT = 587
 # EMAIL_HOST_USER = "me@gmail.com"
 # EMAIL_HOST_PASSWORD = "password"
+
+
+# forgot-password token expired in 1 hour
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
