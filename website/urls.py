@@ -3,7 +3,11 @@ from django.urls import path, include
 
 from accounts.views import UserCreateAPIView, LoginAPIView, PasswordResetView
 
-from products.views import ProductRequestView
+from products.views import (
+    ProductRequestDeleteView,
+    ProductRequestListView,
+    ProductRequestView,
+)
 
 
 urlpatterns = [
@@ -17,4 +21,6 @@ urlpatterns = [
         include("django_rest_passwordreset.urls", namespace="forgot_password"),
     ),
     path("products/request/", ProductRequestView().as_view()),
+    path("products/request/list/", ProductRequestListView().as_view()),
+    path("products/request/delete/", ProductRequestDeleteView().as_view()),
 ]
