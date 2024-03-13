@@ -1,11 +1,11 @@
 from rest_framework import generics, permissions, authentication, pagination
 
-from .models import ProductRequest
+from .models import ProductRequest, Product
 
-from .serializers import ProductRequestSerializer
+from .serializers import ProductRequestSerializer, ProductSerializer
 
 
-class ProductRequestView(generics.CreateAPIView):
+class ProductRequestCreateView(generics.CreateAPIView):
     serializer_class = ProductRequestSerializer
     permission_classes = [permissions.AllowAny, permissions.IsAuthenticated]
     authentication_classes = [
@@ -30,6 +30,36 @@ class ProductRequestDeleteView(generics.DestroyAPIView):
     queryset = ProductRequest.objects.all()
     serializer_class = ProductRequestSerializer
     permission_classes = [permissions.IsAdminUser]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+
+class ProductCreateView(generics.CreateAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAdminUser]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+    def get_queryset(self):
+        return Product.objects.all()
+
+
+class ProductDetailView(generics.RetrieveAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [
         authentication.TokenAuthentication,
         authentication.SessionAuthentication,
