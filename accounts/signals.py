@@ -29,12 +29,13 @@ def password_reset_token_created(
         "username": reset_password_token.user.username,
         "email": reset_password_token.user.email,
         "first_name": reset_password_token.user.first_name,
-        "password_reset_url": "{}?token={}".format(
-            instance.request.build_absolute_uri(
-                reverse("forgot_password:reset-password-confirm")
-            ),
-            reset_password_token.key,
-        ),
+        # "password_reset_url": "{}?token={}".format(
+        #     instance.request.build_absolute_uri(
+        #         reverse("forgot_password:reset-password-confirm")
+        #     ),
+        #     reset_password_token.key,
+        # ),
+        "password_reset_url": f"http://localhost:3000/forgot-password/confirm/?token={reset_password_token.key}",
     }
 
     # render email text
