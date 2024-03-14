@@ -20,6 +20,9 @@ def password_reset_token_created(
     :param kwargs:
     :return:
     """
+
+    if reset_password_token is None:
+        return
     # send an e-mail to the user
     context = {
         "current_user": reset_password_token.user,
