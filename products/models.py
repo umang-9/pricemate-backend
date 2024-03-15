@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Product(models.Model):
     title = models.CharField(max_length=500)
-    link = models.URLField()
+    link = models.URLField(max_length=1000)
     image = models.URLField()
     platform = models.CharField(max_length=50, default="amazon")
     about = models.TextField()
@@ -26,7 +26,7 @@ class Price(models.Model):
 
 
 class ProductRequest(models.Model):
-    link = models.URLField(max_length=500)
+    link = models.URLField(max_length=1000)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):

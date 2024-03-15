@@ -20,12 +20,25 @@ class ProductRequestSerializer(serializers.ModelSerializer):
         link_to_save = link_to_save.split("https://")[1]
 
         # validating amazon.ca links
-        if link_to_save.split("/")[2] != "dp":
-            raise serializers.ValidationError("Link not supported!")
+        # if link_to_save.split("/")[2] != "dp":
+        # raise serializers.ValidationError("Link not supported!")
 
-        link_to_save = "https://" + "/".join(link_to_save.split("/")[0:4])
+        link_parts = link_to_save.split("/")
+        link_to_save = "https://"
+        previous_part = ""
+        for part in link_parts:
+            if previous_part == "dp":
+                link_to_save += part + "/"
+                break
+            link_to_save += part + "/"
+            previous_part = part
 
-        if Product.objects.filter(link=link_to_save).exists():
+        # link_to_save = "https://" + "/".join(link_to_save.split("/")[0:4])
+
+        if (
+            Product.objects.filter(link=link_to_save).exists()
+            or ProductRequest.objects.filter(link=link_to_save).exists()
+        ):
             raise serializers.ValidationError("Link already exists!")
 
         return link_to_save
