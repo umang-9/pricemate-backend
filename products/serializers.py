@@ -2,13 +2,21 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from .models import ProductRequest, Product
+from .models import ProductRequest, Product, Price
+
+
+class PriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Price
+        fields = ["id", "amount", "product", "timestamp"]
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    prices = PriceSerializer(many=True, source="price_set", read_only=True)
+
     class Meta:
         model = Product
-        fields = ["id", "title", "image", "link", "platform", "about"]
+        fields = ["id", "title", "image", "link", "platform", "about", "prices"]
 
 
 class ProductRequestSerializer(serializers.ModelSerializer):

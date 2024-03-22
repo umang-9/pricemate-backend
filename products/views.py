@@ -1,8 +1,8 @@
 from rest_framework import generics, permissions, authentication, pagination
 
-from .models import ProductRequest, Product
+from .models import ProductRequest, Product, Price
 
-from .serializers import ProductRequestSerializer, ProductSerializer
+from .serializers import ProductRequestSerializer, ProductSerializer, PriceSerializer
 
 
 class ProductRequestCreateView(generics.CreateAPIView):
@@ -52,6 +52,16 @@ class ProductCreateView(generics.CreateAPIView):
 
 
 class ProductListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+
+class ProductDetailView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [
@@ -60,14 +70,31 @@ class ProductListView(generics.ListAPIView):
     ]
 
     def get_queryset(self):
-        return Product.objects.all()
+        qs = Product.objects.all()
+        print(qs)
+        return qs
 
 
-class ProductDetailView(generics.RetrieveAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+class PriceCreateView(generics.CreateAPIView):
+    serializer_class = PriceSerializer
+    permission_classes = [permissions.IsAdminUser]
     authentication_classes = [
         authentication.TokenAuthentication,
         authentication.SessionAuthentication,
     ]
+
+    def perform_create(self, serializer):
+        # print(serializer.validated_data)
+        # if serializer.validated_data.get('amount') != Price.objects.filter(product__id=):
+        # return super().perform_create(serializer)
+        product = serializer.validated_data.get("product")
+        amount = serializer.validated_data.get("amount")
+
+        prices = Price.objects.filter(product=product)
+        if not prices.exists():
+            return super().perform_create(serializer)
+
+        last_price = prices.order_by("-timestamp")[0].amount
+
+        if amount != last_price:
+            return super().perform_create(serializer)

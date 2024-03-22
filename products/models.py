@@ -15,6 +15,14 @@ class Product(models.Model):
         return self.title
 
 
+class ProductRequest(models.Model):
+    link = models.URLField(max_length=1000)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.link
+
+
 class Price(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2, max_digits=6)
@@ -23,11 +31,3 @@ class Price(models.Model):
 
     def __str__(self):
         return f"{self.amount} === {self.product.title}"
-
-
-class ProductRequest(models.Model):
-    link = models.URLField(max_length=1000)
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-
-    def __str__(self):
-        return self.link

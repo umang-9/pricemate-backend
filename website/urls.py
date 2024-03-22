@@ -12,6 +12,8 @@ from products.views import (
     ProductRequestCreateView,
     ProductRequestDeleteView,
     ProductRequestListView,
+    # price
+    PriceCreateView,
 )
 
 
@@ -29,6 +31,8 @@ urlpatterns = [
     path("products/request/delete/<int:pk>/", ProductRequestDeleteView().as_view()),
     path("products/request/list/", ProductRequestListView().as_view()),
     path("products/request/", ProductRequestCreateView().as_view()),
+    # price
+    path("products/price/", PriceCreateView().as_view()),
     # product
     path("products/detail/<int:pk>/", ProductDetailView().as_view()),
     path("products/list/", ProductListView().as_view()),
