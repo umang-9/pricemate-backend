@@ -14,12 +14,15 @@ from products.views import (
     ProductRequestListView,
     # price
     PriceCreateView,
+    # Watch
+    WatchCreateView,
 )
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    # auth
     path("login/", LoginAPIView.as_view()),
     path("signup/", UserCreateAPIView.as_view()),
     path("reset-password/", PasswordResetView().as_view()),
@@ -37,4 +40,6 @@ urlpatterns = [
     path("products/detail/<int:pk>/", ProductDetailView().as_view()),
     path("products/list/", ProductListView().as_view()),
     path("products/", ProductCreateView().as_view()),
+    # watch
+    path("products/watch/", WatchCreateView().as_view()),
 ]

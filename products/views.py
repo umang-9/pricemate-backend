@@ -1,8 +1,13 @@
 from rest_framework import generics, permissions, authentication, pagination
 
-from .models import ProductRequest, Product, Price
+from .models import ProductRequest, Product, Price, Watch
 
-from .serializers import ProductRequestSerializer, ProductSerializer, PriceSerializer
+from .serializers import (
+    PriceSerializer,
+    ProductRequestSerializer,
+    ProductSerializer,
+    WatchSerializer,
+)
 
 
 class ProductRequestCreateView(generics.CreateAPIView):
@@ -98,3 +103,16 @@ class PriceCreateView(generics.CreateAPIView):
 
         if amount != last_price:
             return super().perform_create(serializer)
+
+
+class WatchCreateView(generics.CreateAPIView):
+    serializer_class = WatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)

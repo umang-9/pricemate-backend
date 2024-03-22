@@ -2,7 +2,7 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from .models import ProductRequest, Product, Price
+from .models import ProductRequest, Product, Price, Watch
 
 
 class PriceSerializer(serializers.ModelSerializer):
@@ -17,6 +17,22 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ["id", "title", "image", "link", "platform", "about", "prices"]
+
+
+class WatchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Watch
+        fields = ["id", "product"]  # "users" not needed (get it through request object)
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        product = attrs.get("product")
+
+        # already watching
+        if Watch.objects.filter(user=request.user, product=product).exists():
+            raise serializers.ValidationError("Already watching this product!")
+
+        return super().validate(attrs)
 
 
 class ProductRequestSerializer(serializers.ModelSerializer):
