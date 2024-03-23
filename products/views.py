@@ -68,9 +68,14 @@ class ProductListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return Product.objects.all().prefetch_related(
-            Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
-        )
+        if user.is_authenticated:
+            return Product.objects.all().prefetch_related(
+                Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
+            )
+        else:
+            return Product.objects.all().prefetch_related(
+                Prefetch("watch_set", queryset=Watch.objects.filter(user=None))
+            )
 
 
 class ProductDetailView(generics.RetrieveAPIView):
