@@ -1,3 +1,5 @@
+from django.db.models import Prefetch
+
 from rest_framework import generics, permissions, authentication, pagination
 
 from .models import ProductRequest, Product, Price, Watch
@@ -57,13 +59,18 @@ class ProductCreateView(generics.CreateAPIView):
 
 
 class ProductListView(generics.ListAPIView):
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     authentication_classes = [
         authentication.TokenAuthentication,
         authentication.SessionAuthentication,
     ]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Product.objects.all().prefetch_related(
+            Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
+        )
 
 
 class ProductDetailView(generics.RetrieveAPIView):
@@ -76,7 +83,6 @@ class ProductDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         qs = Product.objects.all()
-        print(qs)
         return qs
 
 
@@ -89,9 +95,6 @@ class PriceCreateView(generics.CreateAPIView):
     ]
 
     def perform_create(self, serializer):
-        # print(serializer.validated_data)
-        # if serializer.validated_data.get('amount') != Price.objects.filter(product__id=):
-        # return super().perform_create(serializer)
         product = serializer.validated_data.get("product")
         amount = serializer.validated_data.get("amount")
 
@@ -116,3 +119,18 @@ class WatchCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
+
+
+class WatchDeleteView(generics.DestroyAPIView):
+    queryset = Watch.objects.all()
+    serializer_class = WatchSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        if instance.user == user:
+            instance.delete()

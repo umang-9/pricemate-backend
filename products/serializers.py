@@ -11,14 +11,6 @@ class PriceSerializer(serializers.ModelSerializer):
         fields = ["id", "amount", "product", "timestamp"]
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    prices = PriceSerializer(many=True, source="price_set", read_only=True)
-
-    class Meta:
-        model = Product
-        fields = ["id", "title", "image", "link", "platform", "about", "prices"]
-
-
 class WatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Watch
@@ -33,6 +25,24 @@ class WatchSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Already watching this product!")
 
         return super().validate(attrs)
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    prices = PriceSerializer(many=True, source="price_set", read_only=True)
+    watch = WatchSerializer(many=True, source="watch_set", read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "title",
+            "image",
+            "link",
+            "platform",
+            "about",
+            "prices",
+            "watch",
+        ]
 
 
 class ProductRequestSerializer(serializers.ModelSerializer):
