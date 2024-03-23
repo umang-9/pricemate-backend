@@ -135,6 +135,9 @@ class WatchDeleteView(generics.DestroyAPIView):
         authentication.SessionAuthentication,
     ]
 
+    def get_queryset(self):
+        return Watch.objects.filter(user=self.request.user)
+
     def perform_destroy(self, instance):
         user = self.request.user
         if instance.user == user:
