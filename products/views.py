@@ -77,6 +77,8 @@ class ProductListView(generics.ListAPIView):
             "-timestamp",
             "title",
             "-title",
+            "price__amount",
+            "-price__amount",
         ]:
             order_by = "?"
         queryset = queryset.order_by(order_by)

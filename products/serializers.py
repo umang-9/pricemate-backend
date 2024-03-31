@@ -29,7 +29,6 @@ class WatchSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     prices = PriceSerializer(many=True, source="price_set", read_only=True)
-    # watch = WatchSerializer(many=True, source="watch_set", read_only=True)
     watch = serializers.SerializerMethodField()
 
     def get_watch(self, obj):
