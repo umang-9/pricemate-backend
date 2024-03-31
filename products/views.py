@@ -70,7 +70,14 @@ class ProductListView(generics.ListAPIView):
         queryset = Product.objects.all()
         # ordering
         order_by = self.request.query_params.get("orderby", "?")
-        if order_by not in ["updated", "-updated", "timestamp", "-timestamp"]:
+        if order_by not in [
+            "updated",
+            "-updated",
+            "timestamp",
+            "-timestamp",
+            "title",
+            "-title",
+        ]:
             order_by = "?"
         queryset = queryset.order_by(order_by)
 
