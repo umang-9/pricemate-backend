@@ -67,15 +67,24 @@ class ProductListView(generics.ListAPIView):
     ]
 
     def get_queryset(self):
+        queryset = Product.objects.all()
+        # ordering
+        order_by = self.request.query_params.get("orderby", "?")
+        if order_by not in ["updated", "-updated", "timestamp", "-timestamp"]:
+            order_by = "?"
+        queryset = queryset.order_by(order_by)
+
+        # filtering based on user
         user = self.request.user
         if user.is_authenticated:
-            return Product.objects.all().prefetch_related(
+            queryset = queryset.prefetch_related(
                 Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
             )
         else:
-            return Product.objects.all().prefetch_related(
+            queryset = queryset.prefetch_related(
                 Prefetch("watch_set", queryset=Watch.objects.filter(user=None))
             )
+        return queryset
 
 
 class ProductDetailView(generics.RetrieveAPIView):
@@ -105,12 +114,15 @@ class PriceCreateView(generics.CreateAPIView):
 
         prices = Price.objects.filter(product=product)
         if not prices.exists():
-            return super().perform_create(serializer)
+            object = serializer.save()
+            object.product.save()
+        else:
+            prices[0].product.save()
 
-        last_price = prices.order_by("-timestamp")[0].amount
+            last_price = prices.order_by("-timestamp")[0].amount
 
-        if amount != last_price:
-            return super().perform_create(serializer)
+            if amount != last_price:
+                object = serializer.save()
 
 
 class WatchCreateView(generics.CreateAPIView):
