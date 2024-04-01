@@ -80,7 +80,7 @@ class ProductListView(generics.ListAPIView):
             "price__amount",
             "-price__amount",
         ]:
-            order_by = "?"
+            order_by = "-updated"
         queryset = queryset.order_by(order_by)
 
         # filtering based on user
