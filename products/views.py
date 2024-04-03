@@ -68,8 +68,25 @@ class ProductListView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Product.objects.all()
+
+        # adding watch details into the queryset
+        user = self.request.user
+        if user.is_authenticated:
+            queryset = queryset.prefetch_related(
+                Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
+            )
+        else:
+            queryset = queryset.prefetch_related(
+                Prefetch("watch_set", queryset=Watch.objects.filter(user=None))
+            )
+
+        # adding price details into the queryset
+        queryset = queryset.prefetch_related(
+            Prefetch("price_set", queryset=Price.objects.all())
+        )
+
         # ordering
-        order_by = self.request.query_params.get("orderby", "?")
+        order_by = self.request.query_params.get("orderby", "-updated")
         if order_by not in [
             "updated",
             "-updated",
@@ -81,17 +98,25 @@ class ProductListView(generics.ListAPIView):
             "-price__amount",
         ]:
             order_by = "-updated"
+        # order_by = "-price__amount"  # TODO: remove this line
         queryset = queryset.order_by(order_by)
+        # queryset = queryset.distinct("id") # only works for postgresql
 
-        # filtering based on user
-        user = self.request.user
-        if user.is_authenticated:
-            queryset = queryset.prefetch_related(
-                Prefetch("watch_set", queryset=Watch.objects.filter(user=user))
-            )
-        else:
-            queryset = queryset.prefetch_related(
-                Prefetch("watch_set", queryset=Watch.objects.filter(user=None))
+        # filtering
+        filter_by = self.request.query_params.get("filterby", None)
+
+        if filter_by == "watching":
+            if user.is_authenticated:
+                queryset = queryset.filter(watch__user=user)
+            else:
+                return queryset.none()
+
+        if filter_by is not None and filter_by.startswith("price__"):
+            if len(filter_by.split("__")) != 3:
+                return queryset.none()
+            _, price_start, price_end = filter_by.split("__")
+            queryset = queryset.filter(
+                price__amount__gt=price_start, price__amount__lt=price_end
             )
         return queryset
 
@@ -163,3 +188,6 @@ class WatchDeleteView(generics.DestroyAPIView):
         user = self.request.user
         if instance.user == user:
             instance.delete()
+
+
+# OJ4OhUIOOqlMXudn
