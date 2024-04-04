@@ -14,6 +14,8 @@ from products.views import (
     ProductRequestListView,
     # price
     PriceCreateView,
+    # search
+    ProductSearchListView,
     # Watch
     WatchCreateView,
     WatchDeleteView,
@@ -37,6 +39,8 @@ urlpatterns = [
     path("products/request/", ProductRequestCreateView().as_view()),
     # price
     path("products/price/", PriceCreateView().as_view()),
+    # search
+    path("products/search/", ProductSearchListView.as_view()),
     # product
     path("products/detail/<int:pk>/", ProductDetailView().as_view()),
     path("products/list/", ProductListView().as_view()),

@@ -118,6 +118,7 @@ class ProductListView(generics.ListAPIView):
             queryset = queryset.filter(
                 price__amount__gt=price_start, price__amount__lt=price_end
             )
+
         return queryset
 
 
@@ -188,6 +189,22 @@ class WatchDeleteView(generics.DestroyAPIView):
         user = self.request.user
         if instance.user == user:
             instance.delete()
+
+
+class ProductSearchListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [
+        authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
+    ]
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        query = self.request.query_params.get("q", None)
+        if query is not None:
+            queryset = queryset.filter(title__icontains=query)
+        return queryset
 
 
 # OJ4OhUIOOqlMXudn
