@@ -9,6 +9,7 @@ from .serializers import (
     ProductRequestSerializer,
     ProductSerializer,
     WatchSerializer,
+    WatchCloudSerializer,
 )
 
 
@@ -161,16 +162,24 @@ class PriceCreateView(generics.CreateAPIView):
 
 
 class WatchCreateView(generics.CreateAPIView):
-    serializer_class = WatchSerializer
+    # serializer_class = WatchSerializer
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [
         authentication.TokenAuthentication,
         authentication.SessionAuthentication,
     ]
 
+    def get_serializer_class(self):
+        if self.request.user.is_superuser:
+            return WatchCloudSerializer
+        return WatchSerializer
+
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(user=user)
+        if user.is_superuser:
+            serializer.save()
+        else:
+            serializer.save(user=user)
 
 
 class WatchDeleteView(generics.DestroyAPIView):

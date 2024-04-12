@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 from rest_framework import serializers
 
@@ -12,9 +13,16 @@ class PriceSerializer(serializers.ModelSerializer):
 
 
 class WatchSerializer(serializers.ModelSerializer):
+    """
+    used when data are coming through frontend
+    """
+
     class Meta:
         model = Watch
-        fields = ["id", "product"]  # "users" not needed (get it through request object)
+        fields = [
+            "id",
+            "product",
+        ]  # "user" not needed (get it through request object)
 
     def validate(self, attrs):
         request = self.context.get("request")
@@ -22,6 +30,30 @@ class WatchSerializer(serializers.ModelSerializer):
 
         # already watching
         if Watch.objects.filter(user=request.user, product=product).exists():
+            raise serializers.ValidationError("Already watching this product!")
+
+        return super().validate(attrs)
+
+
+class WatchCloudSerializer(serializers.ModelSerializer):
+    """
+    used when data are coming through cloud functions
+    """
+
+    class Meta:
+        model = Watch
+        fields = [
+            "id",
+            "product",
+            "user",
+        ]
+
+    def validate(self, attrs):
+        product = attrs.get("product")
+        user = attrs.get("user")
+
+        # already watching
+        if Watch.objects.filter(user=user, product=product).exists():
             raise serializers.ValidationError("Already watching this product!")
 
         return super().validate(attrs)
