@@ -4,9 +4,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-a1cpps($jf=qsw4a=5dz$yq$ex53_6m8fg9!)s+(_ins8kkv=!"
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["vibesok.com", "b.vibesok.com"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -84,7 +84,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -114,4 +119,7 @@ DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 
 
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000", "http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = ["https://b.vibesok.com", "https://vibesok.com"]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
