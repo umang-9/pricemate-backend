@@ -22,6 +22,9 @@ from products.views import (
 )
 
 
+from newsletter.views import SubscriberCreateView
+
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
@@ -48,4 +51,6 @@ urlpatterns = [
     # watch
     path("products/watch/", WatchCreateView().as_view()),
     path("products/watch/delete/<int:pk>/", WatchDeleteView().as_view()),
+    # newsletter
+    path("newsletter/", SubscriberCreateView().as_view()),
 ]

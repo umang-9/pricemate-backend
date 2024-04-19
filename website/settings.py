@@ -1,12 +1,15 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = "django-insecure-a1cpps($jf=qsw4a=5dz$yq$ex53_6m8fg9!)s+(_ins8kkv=!"
 
 DEBUG = False
-
 ALLOWED_HOSTS = ["vibesok.com", "b.vibesok.com"]
+
+if DEBUG:
+    ALLOWED_HOSTS.append("127.0.0.1")
+    ALLOWED_HOSTS.append("localhost")
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -19,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_rest_passwordreset",
+    "newsletter",
     "accounts",
     "products",
 ]
