@@ -3,7 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-a1cpps($jf=qsw4a=5dz$yq$ex53_6m8fg9!)s+(_ins8kkv=!"
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ["vibesok.com", "b.vibesok.com"]
 
 if DEBUG:
@@ -123,7 +123,7 @@ DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 
 
-CORS_ALLOWED_ORIGINS = ["https://b.vibesok.com", "https://vibesok.com"]
+CORS_ALLOWED_ORIGINS = ["https://b.vibesok.com", "https://vibesok.com", "http://127.0.0.1:8000", "http://localhost:8000"]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
