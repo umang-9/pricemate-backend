@@ -1,10 +1,12 @@
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-a1cpps($jf=qsw4a=5dz$yq$ex53_6m8fg9!)s+(_ins8kkv=!"
 
 DEBUG = True
 ALLOWED_HOSTS = ["vibesok.com", "b.vibesok.com"]
+
 
 if DEBUG:
     ALLOWED_HOSTS.append("127.0.0.1")
@@ -40,6 +42,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "website.urls"
 
+# import dj_databse_url
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -58,12 +62,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "website.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default="postgresql://pricemate_postgresql_user:PnN60cbxOWycMQomfQkYVXZMkNx7Dko6@dpg-craa5mrtq21c73bv36q0-a/pricemate_postgresql",
+            conn_max_age=600,
+        )
+    }
+# DATABASES["default"] = dj_databse_url.parse("postgresql://pricemate_postgresql_user:PnN60cbxOWycMQomfQkYVXZMkNx7Dko6@dpg-craa5mrtq21c73bv36q0-a.oregon-postgres.render.com/pricemate_postgresql")
 
 AUTH_PASSWORD_VALIDATORS = [
     {

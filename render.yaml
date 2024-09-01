@@ -1,0 +1,24 @@
+databases:
+  - name: pricemate-postgresql
+    plan: free
+    databaseName: pricemate_postgresql
+    user: pricemate_postgresql_user
+
+# postgresql://pricemate_postgresql_user:PnN60cbxOWycMQomfQkYVXZMkNx7Dko6@dpg-craa5mrtq21c73bv36q0-a/pricemate_postgresql
+
+services:
+  - type: web
+    plan: free
+    name: pricemate-backend
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn website.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pricemate-postgresql
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
