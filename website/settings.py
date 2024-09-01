@@ -123,7 +123,7 @@ DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 1
 DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 
 
-CORS_ALLOWED_ORIGINS = ["https://b.vibesok.com", "https://vibesok.com", "http://127.0.0.1:8000", "http://localhost:8000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "https://vibesok.com", "http://127.0.0.1:8000", "http://localhost:8000"]
 
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
