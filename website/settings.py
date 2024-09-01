@@ -4,7 +4,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-a1cpps($jf=qsw4a=5dz$yq$ex53_6m8fg9!)s+(_ins8kkv=!"
 
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ["pricemate-backend.onrender.com"]
 
 
